@@ -1,4 +1,4 @@
-# Milk-V Juipter 运行 Llama3 8B Q4 量化版
+# Milk-V Juipter 运行 Llama3.2 3B
 
 ## 开发板说明
 
@@ -12,18 +12,13 @@ Milk-V Jupiter 是一款基于 Spacemit K1/M1 的 Mini-ITX 设备。该设备集
 
 * demo说明
 
-  <!-- > 这个demo大致是干什么的
+  <!-- > 这个demo大致是干什么的「方案选单」
   > -->
-    本demo展示了如何在Milk-V Jupiter上运行 Llama3 8B Q4 量化版模型
+    本demo展示了如何在Milk-V Jupiter上运行 Llama3.2 3B 模型
 
-* demo源码链接
-
-  <!-- > demo完整源码链接；该信息将用于包管理器集成/打包集成的信息输入
-  > -->
-    [bianbu-linux](https://gitee.com/bianbu-linux)
 * sdk 及链接
 
-    [inferllm-chatglm](https://forum.banana-pi.org/t/bpi-f3-large-model-demo/18541)
+    [SpaceMit ollama](https://archive.spacemit.com/spacemit-ai/ollama/)
 <!-- * Demo 运行所需的 SDK；用于 ruyisdk 集成 sdk； -->
 
 ### Demo运行
@@ -40,44 +35,44 @@ Milk-V Jupiter 是一款基于 Spacemit K1/M1 的 Mini-ITX 设备。该设备集
 - 操作系统：Bianbu Linux 2.0
 - 连接方式：SSH
 
-> 由于模型文件较大，建议在RAM大于8GB的型号上运行该demo。
+> 由于模型运行所需的文件较多，建议在RAM大于8GB的型号上运行该demo。
 
-安装chatglm推理工具
+下载并解压ollama推理工具
 
 ```shell
-sudo apt-get update
-sudo apt-get install inferllm-chatglm
-# 安装inferllm-chatglm包时，会自动下载chatglm2-q4模型
+# 下载spacemit修改的ollama
+wget https://archive.spacemit.com/spacemit-ai/ollama/jdsk-ollama-v0.0.1.tar.gz
+# 解压tar-gzip包
+tar xvf jdsk-ollama-v0.0.1.tar.gz
 ```
 
-运行chatglm2推理
+运行ollama推理服务端
 
 ```shell
-user@k1:~/llm-tests$ /usr/bin/inferllm-chatglm -m /usr/share/inferllm/chatglm2-q4.bin -t 4 -v 2
-main: seed = 1732005254
-skip weight transformer.rotary_pos_emb.inv_freq
-total weight length = 3903463424
-main: interactive mode on.
-sampling parameters: temp = 0.100000, top_k = 40, top_p = 0.950000, repeat_last_n = 64, repeat_penalty = 1.300000
+cd ollama
+chmod +x ollama
+./ollama serve
+```
 
+在另一个终端中运行：
 
-== 运行模型中. ==
- - 输入 Ctrl+C 将在退出程序.
- - 如果你想换行，请在行末输入'\'符号.
+```shell
+username@k1:~/llm-tests/ollama$ ./ollama run llama3.2
+>>> hello
+Hello! How can I assist you today?
 
-> 你好
- 你好👋！我是人工智能助手 ChatGLM2-6B，很高兴见到你，欢迎问我任何问题。
+>>> who are you?
+I'm an artificial intelligence model, which means I'm a computer program designed to simulate human-like 
+conversations and answer questions to the best of my ability. I don't have a personal identity or emotions like 
+humans do, but I'm here to provide information, help with tasks, and engage in conversation.
 
-> 泰山有多高
- 泰山是中国著名的名山之一，位于山东省泰安市境内，主峰玉皇顶海拔为15329米🌉。泰山也是世界文化与自然双重遗产、中国 5A 
-级旅游景区，吸引着无数游客前来观光旅游。
+I was trained on a massive dataset of text from various sources, which allows me to understand and respond to a 
+wide range of topics and questions. My goal is to assist users like you with their queries and provide helpful 
+and accurate information.
 
-> ^C
-Run Model Summary:
-Total Model Compute Time:   208.563480s
-Total Model Compute Token:  120
-Average Token Compute Time: 1738.029003ms
-Average Token Generation Speed: 0.575364token/s
+So, that's me in a nutshell! What about you? How can I help you today?
+
+>>> /bye
 ```
 
 
@@ -85,8 +80,18 @@ Average Token Generation Speed: 0.575364token/s
 
 #### sdk 集成说明
 
-> 给出需要 ruyisdk 集成建议或者总结; -->
+<!-- > 给出需要 ruyisdk 集成建议或者总结; -->
+
+K1处理器运行Llama3.2 3B模型实际使用中token生成速度非常缓慢，无法满足实际使用需求
+
+推测可能没有spacemit的扩展指令集支持
+
 
 #### 问题及状态
 
-> 问题描述或者问题issue链接；用于跟踪/推动问题解决；
+<!-- > 问题描述或者问题issue链接；用于跟踪/推动问题解决； -->
+
+
+该demo运行需要进迭时空的修改版ollama推理工具，但是未找到这个工具的原始代码
+
+如需集成的话现在只能打二进制包，无法进行源码集成
